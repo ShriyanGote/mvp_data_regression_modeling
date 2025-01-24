@@ -28,7 +28,6 @@ def result():
     try:
         all_teams = fetch_team_stats(team_year_stats)
         filtered_player_data, mvp = get_filtered_player_data(team_year_stats, lwr_points, lwr_gs, lwr_efg)
-
         result_data = []
         for name in filtered_player_data['Player']:
             player = get_mvp_data(filtered_player_data, name)
