@@ -3,6 +3,7 @@ from calculations.player_stats import get_filtered_player_data, get_mvp_data, ca
 from calculations.team_stats import fetch_team_stats, get_team
 from calculations.mvp_calculations import get_mvps
 
+
 app = Flask(__name__)
 
 @app.route('/', methods=['GET'])

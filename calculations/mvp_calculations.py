@@ -18,4 +18,12 @@ def get_mvps(given_year):
             year = year_link.split('/')[-1].split('_')[1].split('.')[0]
             player = columns[1].text.strip()
             my_hash[year] = player
-    return my_hash[given_year]
+
+    # # Debug print
+    # print("MVP Hash:", my_hash)
+
+    # Handle missing year
+    if str(given_year) not in my_hash:
+        raise KeyError(f"MVP data for year {given_year} is not available.")
+
+    return my_hash[str(given_year)]
