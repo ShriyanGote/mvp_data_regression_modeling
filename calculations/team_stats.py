@@ -1,21 +1,53 @@
 import requests
 from bs4 import BeautifulSoup
+import time
+session = requests.Session()
+session.headers.update({
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+})
+
+import os
+import json
 
 def fetch_team_stats(year):
+    cache_file = f"cache_{year}.json"
+    if os.path.exists(cache_file):
+        with open(cache_file, 'r') as file:
+            return json.load(file)
+    
     url_team = f"https://www.basketball-reference.com/leagues/NBA_{year}_standings.html"
-    response = requests.get(url_team)
-    response.encoding = 'utf-8'
+    response = session.get(url_team)
+    
+    if response.status_code == 429:
+        print("Rate limit reached. Retrying after delay...")
+        time.sleep(10)
+        response = session.get(url_team)
 
+    if response.status_code != 200:
+        raise Exception(f"Failed to fetch data for year {year}: {response.status_code}")
+    
+    response.encoding = 'utf-8' 
     soup = BeautifulSoup(response.text, 'html.parser')
+
     eastern_table = soup.find('table', {'id': 'divs_standings_E'})
     western_table = soup.find('table', {'id': 'divs_standings_W'})
+
+    if eastern_table is None or western_table is None:
+        raise Exception(f"Could not find standings table for year {year}")
+
     eastern_teams = [extract_team_info(row) for row in eastern_table.find_all('tr', {'class': 'full_table'})]
     western_teams = [extract_team_info(row) for row in western_table.find_all('tr', {'class': 'full_table'})]
     all_teams = bubble_sort(eastern_teams + western_teams)
-    
+
     for i in range(len(all_teams)):
         all_teams[i]['Rank'] = i + 1
+    
+    # Save to cache
+    with open(cache_file, 'w') as file:
+        json.dump(all_teams, file)
+    
     return all_teams
+
 
 def extract_team_info(row):
     try:
