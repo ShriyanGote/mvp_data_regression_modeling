@@ -28,6 +28,7 @@ def result():
     # Fetch team and player data
     try:
         all_teams = fetch_team_stats(team_year_stats)
+        print(all_teams)
         filtered_player_data, mvp = get_filtered_player_data(team_year_stats, lwr_points, lwr_gs, lwr_efg)
         result_data = []
         for name in filtered_player_data['Player']:
@@ -42,7 +43,7 @@ def result():
             player_fullstats = list(player) + [player_team['Wins'], player_team['Rank']]
             result_data.append({
                 'Player': name,
-                'MVP Score': calculate_score(player, player_team),
+                'MVP Score': calculate_score(player_fullstats),
                 'MVP': (name == mvp)
             })
         # Sort and remove duplicates

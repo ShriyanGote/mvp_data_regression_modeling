@@ -9,9 +9,9 @@ session.headers.update({
 import os
 import json
 
-def fetch_team_stats(year):
+def get_team_stats_by_year(year):
     cache_file = f"cache_{year}.json"
-    if os.path.exists(cache_file):
+    if os.path.exists("cache" + cache_file):
         with open(cache_file, 'r') as file:
             return json.load(file)
     
@@ -40,7 +40,7 @@ def fetch_team_stats(year):
     all_teams = bubble_sort(eastern_teams + western_teams)
 
     for i in range(len(all_teams)):
-        all_teams[i]['Rank'] = i + 1
+        all_teams[i]['Rank'] = len(all_teams) - i -2
     
     # Save to cache
     with open(cache_file, 'w') as file:

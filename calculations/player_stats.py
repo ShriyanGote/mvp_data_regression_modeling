@@ -3,6 +3,7 @@ import pandas as pd
 import requests
 from bs4 import BeautifulSoup
 from calculations.mvp_calculations import get_mvps
+from calculations.team_stats import fetch_team_stats, get_team
 
 def get_filtered_player_data(year, lwr_points, lwr_gs, lwr_efg):
     try:
@@ -78,3 +79,14 @@ def get_mvp_data(data, player):
         raise RuntimeError(f"Error accessing player data for {player}: {e}")
     except Exception as e:
         raise RuntimeError(f"An unexpected error occurred in get_mvp_data: {e}")
+
+def calculate_score(player_stats):
+    efg = player_stats[3] * 60
+    stl = player_stats[4] * 20
+    rbs = player_stats[5] * 3
+    ast = player_stats[6] * 4
+    pts = player_stats[7] * 1
+    wins = player_stats[14]
+    rank = player_stats[15]
+    score = (0.15 * (wins + rank)) + (0.28 * pts) + (0.12 * rbs) + (0.16 * ast) + (0.21 * efg) + (0.08 * stl)
+    return round(score, 2)

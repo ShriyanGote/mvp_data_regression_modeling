@@ -50,8 +50,3 @@ def prepare_clean_multi_year(start_year, end_year, lwr_points=15, lwr_gs=50, lwr
     balanced_data = pd.concat([mvps, non_mvps_sampled]).sample(frac=1, random_state=42).reset_index(drop=True)
 
     return balanced_data
-
-
-
-
-
