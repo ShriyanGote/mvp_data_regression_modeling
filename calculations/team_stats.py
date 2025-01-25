@@ -1,17 +1,23 @@
 import requests
 from bs4 import BeautifulSoup
 import time
+import os
+import json
+
+# Set up a requests session with headers
 session = requests.Session()
 session.headers.update({
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
 })
 
-import os
-import json
+# Ensure the cache directory exists
+CACHE_DIR = "cache"
+if not os.path.exists(CACHE_DIR):
+    os.makedirs(CACHE_DIR)
 
 def get_team_stats_by_year(year):
-    cache_file = f"cache_{year}.json"
-    if os.path.exists("cache" + cache_file):
+    cache_file = os.path.join(CACHE_DIR, f"cache_{year}.json")  # Use cache directory
+    if os.path.exists(cache_file):
         with open(cache_file, 'r') as file:
             return json.load(file)
     
@@ -40,14 +46,13 @@ def get_team_stats_by_year(year):
     all_teams = bubble_sort(eastern_teams + western_teams)
 
     for i in range(len(all_teams)):
-        all_teams[i]['Rank'] = len(all_teams) - i -2
+        all_teams[i]['Rank'] = len(all_teams) - i - 1  # Adjusted rank calculation
     
     # Save to cache
     with open(cache_file, 'w') as file:
         json.dump(all_teams, file)
     
     return all_teams
-
 
 def extract_team_info(row):
     try:
