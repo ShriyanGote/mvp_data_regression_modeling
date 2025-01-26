@@ -92,11 +92,11 @@ if not advanced_df.empty and not totals_df.empty:
     player_stats = player_stats[player_stats['team'] != "TOT"]
 
     # Calculate additional stats
-    player_stats['PPG'] = player_stats['points'] / player_stats['games_x']
-    player_stats['APG'] = player_stats['assists'] / player_stats['games_x']
-    player_stats['RPG'] = player_stats['totalRb'] / player_stats['games_x']
-    player_stats['SPG'] = player_stats['steals'] / player_stats['games_x']
-    player_stats['BPG'] = player_stats['blocks'] / player_stats['games_x']
+    player_stats['PPG'] = round(player_stats['points'] / player_stats['games_x'], 2)
+    player_stats['APG'] = round(player_stats['assists'] / player_stats['games_x'], 2)
+    player_stats['RPG'] = round(player_stats['totalRb'] / player_stats['games_x'], 2)
+    player_stats['SPG'] = round(player_stats['steals'] / player_stats['games_x'], 2)
+    player_stats['BPG'] = round(player_stats['blocks'] / player_stats['games_x'], 2)
     player_stats['MVP'] = 0
     
 
@@ -135,3 +135,26 @@ if not advanced_df.empty and not totals_df.empty:
     print("Final dataset saved to 'nba_player_stats.csv'")
 else:
     print("One or both player DataFrames (advanced/totals) are empty. Cannot proceed.")
+
+
+
+# Load the player stats CSV (assuming it's already saved locally)
+player_stats = pd.read_csv("nba_player_stats.csv")
+
+# Load the league and top 20 averages CSV
+averages = pd.read_csv("league_avgs.csv")
+
+# Add columns for the scores
+for stat, avg_stat in [("PPG", "Top 20 PPG Avg"), ("APG", "Top 20 APG Avg"), ("RPG", "Top 20 RPG Avg"),
+                       ("SPG", "Top 20 SPG Avg"), ("BPG", "Top 20 BPG Avg"), ("eFG%", "Top 20 eFG% Avg")]:
+    # Map the average stats to the corresponding season
+    averages_dict = averages.set_index("Season")[avg_stat].to_dict()
+    player_stats[f"{stat}_Score"] = player_stats.apply(
+        lambda row: row[stat] / averages_dict[row["season"]] if row["season"] in averages_dict else None,
+        axis=1
+    )
+
+# Save the updated DataFrame
+player_stats.to_csv("nba_player_stats_with_scores.csv", index=False)
+
+print("Scores added and saved to 'nba_player_stats_with_scores.csv'")
