@@ -1,21 +1,12 @@
-import React, { useState } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import IndexPage from "./index";
-import ResultPage from "./result";
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./App"; // ✅ Ensure correct import
 import "./index.css";
-import "./result.css";
 
-function App() {
-  const [queryParams, setQueryParams] = useState({});
-
-  return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<IndexPage setQueryParams={setQueryParams} />} />
-        <Route path="/result" element={<ResultPage queryParams={queryParams} />} />
-      </Routes>
-    </Router>
-  );
-}
-
-export default App;
+// ✅ Use ReactDOM.createRoot for React 18+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);

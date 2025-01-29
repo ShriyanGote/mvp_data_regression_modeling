@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, jsonify
+from flask import Flask, request, redirect, url_for, jsonify, send_from_directory
 from flask_cors import CORS
 import os
 import sys
@@ -7,23 +7,19 @@ from calculations.player_stats import get_filtered_player_data, get_mvp_data, ca
 from calculations.team_stats import get_team_stats_by_year, get_team
 
 app = Flask(__name__)
-CORS(app)  # Allow cross-origin requests
-
-@app.route('/', methods=['GET'])
-def index():
-    return render_template('index.html')
+CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})  # Allow frontend requests
 
 @app.route('/result', methods=['GET'])
 def result():
     team_year_stats = request.args.get('year')
-    lwr_points = request.args.get('lwr_points', '15')  # Default as string '15'
-    lwr_points = float(lwr_points) if lwr_points.strip() else 15.0  # Convert to float or use default
+    lwr_points = request.args.get('lwr_points', '15')
+    lwr_points = float(lwr_points.strip()) if lwr_points.strip() else 15.0
 
-    lwr_efg = request.args.get('lwr_efg', '40')  # Default as string '40'
-    lwr_efg = float(lwr_efg) * 0.01 if lwr_efg.strip() else 0.4  # Convert to fraction or use default
+    lwr_efg = request.args.get('lwr_efg', '40')
+    lwr_efg = float(lwr_efg.strip()) * 0.01 if lwr_efg.strip() else 0.4
 
-    lwr_gs = request.args.get('lwr_gs', '50')  # Default as string '50'
-    lwr_gs = int(lwr_gs) if lwr_gs.strip() else 50  # Convert to int or use default
+    lwr_gs = request.args.get('lwr_gs', '50')
+    lwr_gs = int(lwr_gs.strip()) if lwr_gs.strip() else 50
 
     if not team_year_stats:
         return redirect(url_for('index'))
@@ -35,7 +31,7 @@ def result():
         for name in filtered_player_data['Player']:
             player = get_mvp_data(filtered_player_data, name)
             if player is None:
-                continue 
+                continue
 
             player_team = get_team(all_teams, str(player[2]))
             if not player_team:
@@ -49,12 +45,17 @@ def result():
             })
 
         result_data_sorted = sorted(result_data, key=lambda x: x['MVP Score'], reverse=True)
-        unique_result_data = {player['Player']: player for player in result_data_sorted}.values()
+        unique_result_data = list({player['Player']: player for player in result_data_sorted}.values())
 
-        return jsonify(list(unique_result_data))  # Return JSON for React
-    
+        return jsonify(unique_result_data)
+
     except Exception as e:
         return jsonify({"error": f"Error processing player stats: {e}"}), 500
 
+
+@app.route('/static/<path:path>')
+def serve_static(path):
+    return send_from_directory(os.path.join(app.root_path, 'static'), path)
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=5001)

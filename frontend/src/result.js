@@ -9,7 +9,7 @@ function ResultPage({ queryParams }) {
     const { year, lwrPoints, lwrEfg, lwrGs } = queryParams;
 
     fetch(
-      `/result?year=${year}&lwr_points=${lwrPoints}&lwr_efg=${lwrEfg}&lwr_gs=${lwrGs}`
+      `http://localhost:5001/result?year=${year}&lwr_points=${lwrPoints}&lwr_efg=${lwrEfg}&lwr_gs=${lwrGs}`
     )
       .then((response) => response.json())
       .then((result) => {
