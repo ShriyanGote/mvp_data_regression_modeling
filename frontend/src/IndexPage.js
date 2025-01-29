@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom"; // ✅ Import navigation
 import "./index.css";
 
 function IndexPage({ setQueryParams }) {
@@ -6,15 +7,21 @@ function IndexPage({ setQueryParams }) {
   const [lwrPoints, setLwrPoints] = useState(15);
   const [lwrEfg, setLwrEfg] = useState(40);
   const [lwrGs, setLwrGs] = useState(50);
+  const navigate = useNavigate(); // ✅ Setup navigation
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    
+    // ✅ Update state
     setQueryParams({
       year,
       lwrPoints,
       lwrEfg,
       lwrGs,
     });
+
+    // ✅ Navigate to /result with query parameters
+    navigate(`/result?year=${year}&lwr_points=${lwrPoints}&lwr_efg=${lwrEfg}&lwr_gs=${lwrGs}`);
   };
 
   return (
@@ -60,5 +67,4 @@ function IndexPage({ setQueryParams }) {
   );
 }
 
-// ✅ Make sure to add the default export
 export default IndexPage;
