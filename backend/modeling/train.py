@@ -5,7 +5,6 @@ import numpy as np
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from modeling.prepare import prepare_clean_multi_year
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 import tensorflow as tf
@@ -14,13 +13,13 @@ from tensorflow.keras.layers import Dense
 import matplotlib.pyplot as plt
 
 # Prepare the dataset
-data = prepare_clean_multi_year(2000, 2024)
+# data = prepare_clean_multi_year(2000, 2024)
 # print(data)
 # print(data['MVP'].value_counts())  # Check the balance of MVP vs non-MVP
 
 # Define features (X) and target (y)
-X = data[['PTS', 'AST', 'TRB', 'eFG%', 'Wins', 'Rank']]
-y = data['MVP']
+# X = data[['PTS', 'AST', 'TRB', 'eFG%', 'Wins', 'Rank']]
+# y = data['MVP']
 
 # # Split into training and testing sets
 # from sklearn.model_selection import train_test_split

@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import requests
 from bs4 import BeautifulSoup
-from calculations.mvp_calculations import get_mvps
+from backend.processing.get_mvps import get_mvps
 
 def get_filtered_player_data(year, lwr_points, lwr_gs, lwr_efg):
     try:

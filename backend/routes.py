@@ -3,8 +3,8 @@ import os
 import sys
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from calculations.player_stats import get_filtered_player_data, get_mvp_data, calculate_score
-from calculations.team_stats import get_team_stats_by_year, get_team
+from backend.processing.parse_player_stats import get_filtered_player_data, get_mvp_data, calculate_score
+from backend.processing.team_stats import get_team_stats_by_year, get_team
 
 def register_routes(app):
     @app.route('/result', methods=['GET'])
