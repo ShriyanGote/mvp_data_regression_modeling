@@ -4,7 +4,7 @@ import time
 
 # Define the range of seasons
 start_season = 1998
-end_season = 2023
+end_season = 2024
 season_ids = [f"{year}-{str(year + 1)[-2:]}" for year in range(start_season, end_season)]
 
 # Initialize a list to store results for each season
